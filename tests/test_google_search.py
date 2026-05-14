@@ -28,6 +28,7 @@ def test_login():
 
     time.sleep(5)
     #print("we are logged in feture login")
+    print(driver.current_url)
 
     driver.save_screenshot("failure.png")
 
