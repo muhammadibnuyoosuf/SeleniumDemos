@@ -26,7 +26,7 @@ def test_login():
     # Click login
     driver.find_element(By.ID, "login-button").click()
 
-    time.sleep(3)
+    time.sleep(5)
 
     driver.save_screenshot("failure.png")
 
