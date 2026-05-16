@@ -22,67 +22,55 @@
 #     gender_value = driver.find_element(By.CSS_SELECTOR,".genderbutton").text
 #     age_value = driver.find_element(By.CSS_SELECTOR,".groupradiobutton").text
 #     assert gender_value == "Male","Gender mismatch"
-
-
+import softest
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.keys import Keys
+import time
 
+class TestAssertionSoft(softest.TestCase):
 
-def test_assertion_hard():
+    def test_assertion_soft(self):
+        # Launch browser
+        driver = webdriver.Chrome()
 
-    driver = webdriver.Chrome()
-    wait = WebDriverWait(driver, 10)
+        # Open website
+        driver.get("https://practicetestautomation.com/practice-test-login/")
 
-    driver.maximize_window()
-    driver.get("https://www.testmuai.com/selenium-playground/radiobutton-demo/")
+        # Maximize window
+        driver.maximize_window()
 
-    # Male radio button
-    male = wait.until(
-        EC.presence_of_element_located(
-            (By.CSS_SELECTOR, "input[name='gender'][value='Male']")
-        )
-    )
+        # Find username field and enter value
+        username = driver.find_element(By.ID, "username")
+        username.send_keys("student")
 
-    driver.execute_script("arguments[0].click();", male)
+        # Find password field and enter value
+        password = driver.find_element(By.ID, "password")
+        password.send_keys("Password123")
 
-    # Re-find age element fresh
-    age = wait.until(
-        EC.presence_of_element_located(
-            (By.XPATH, "//input[@value='5 - 15']")
-        )
-    )
+        # Click login button
+        login_btn = driver.find_element(By.ID, "submit")
+        login_btn.click()
 
-    driver.execute_script("arguments[0].click();", age)
+        # Wait for page load
+        time.sleep(2)
 
-    # Click Get Values
-    button = wait.until(
-        EC.element_to_be_clickable(
-            (By.XPATH, "//button[contains(text(),'Get values')]")
-        )
-    )
+        # Assertion
+        expected_text = "Logged In Successfully"
 
-    button.click()
+        actual_text = driver.find_element(By.TAG_NAME, "h1").text
 
-    # Read results
-    gender_value = wait.until(
-        EC.visibility_of_element_located(
-            (By.CSS_SELECTOR, ".genderbutton")
-        )
-    ).text
+        print("Object of expected text is: {}".format(id(expected_text)))
+        print("Object of actual text is: {}".format(id(actual_text)))
 
-    age_value = wait.until(
-        EC.visibility_of_element_located(
-            (By.CSS_SELECTOR, ".groupradiobutton")
-        )
-    ).text
+        #assert expected_text == actual_text,"Displayed something else"
+        #assert driver.title.__contains__("Logged In Successfully"),"Title is not displayed"
+        self.soft_assert(self.assertEqual,expected_text,actual_text,"test_assertion_soft failed")
+        self.soft_assert(self.assertTrue,driver.title.__contains__("Logged In Successfully"),"Title is not displayed")
+        self.assert_all()
 
-    print(gender_value)
-    print(age_value)
+        print("Test Passed")
 
-    assert gender_value == "Male"
-    assert age_value == "5 - 15"
-
-    driver.quit()
+        # Close browser
+        driver.quit()
 
